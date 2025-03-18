@@ -14,6 +14,8 @@ interface AuthContextType {
   login: (user: User) => void;
   logout: () => void;
   isAdmin: () => boolean;
+  requireAuth: () => boolean;
+  requireAdmin: () => boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -23,6 +25,8 @@ export const AuthContext = createContext<AuthContextType>({
   login: () => {},
   logout: () => {},
   isAdmin: () => false,
+  requireAuth: () => false,
+  requireAdmin: () => false,
 });
 
 // Predefined admin user
@@ -56,6 +60,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return user?.role === 'admin';
   };
 
+  // New methods to handle authentication requirements
+  const requireAuth = () => {
+    // Since we've removed login functionality and always have admin user,
+    // this always returns true but we keep it for future use
+    return true;
+  };
+
+  const requireAdmin = () => {
+    // Since we've removed login functionality and always have admin user with admin role,
+    // this always returns true but we keep it for future use
+    return true;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -65,6 +82,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         isAdmin,
+        requireAuth,
+        requireAdmin,
       }}
     >
       {children}
