@@ -1,5 +1,4 @@
-
-import { createContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useState, ReactNode, useEffect } from 'react';
 
 interface User {
   id: string;
@@ -26,32 +25,31 @@ export const AuthContext = createContext<AuthContextType>({
   isAdmin: () => false,
 });
 
+// Predefined admin user
+const adminUser: User = {
+  id: '1',
+  name: 'Admin User',
+  email: 'admin@lumina.com',
+  role: 'admin'
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check local storage for user data
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Failed to parse user from localStorage', error);
-        localStorage.removeItem('user');
-      }
-    }
+    // Set the predefined admin user immediately
+    setUser(adminUser);
     setIsLoading(false);
   }, []);
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+    // We still keep this method for future use, but it just resets to admin
+    setUser(adminUser);
   };
 
   const isAdmin = () => {

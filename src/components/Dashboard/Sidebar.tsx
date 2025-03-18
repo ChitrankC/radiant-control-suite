@@ -7,6 +7,7 @@ import {
   Lightbulb,
   LogOut,
   Menu,
+  RefreshCw,
   Settings,
   Users,
   X,
@@ -16,15 +17,21 @@ import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 const Sidebar = () => {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(!isMobile);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Session refreshed");
   };
 
   const NavItem = ({
@@ -110,7 +117,7 @@ const Sidebar = () => {
               label="Analytics"
               href="/dashboard/analytics"
             />
-            {isAdmin() && (
+            {user?.role === 'admin' && (
               <NavItem
                 icon={Users}
                 label="User Management"
@@ -130,7 +137,7 @@ const Sidebar = () => {
                 <AvatarImage src="" />
                 <AvatarFallback>
                   {user?.name
-                    .split(" ")
+                    ?.split(" ")
                     .map((n) => n[0])
                     .join("")}
                 </AvatarFallback>
@@ -145,10 +152,10 @@ const Sidebar = () => {
             <Button
               variant="outline"
               className="w-full justify-start gap-2"
-              onClick={() => logout()}
+              onClick={handleLogout}
             >
-              <LogOut className="h-4 w-4" />
-              Log out
+              <RefreshCw className="h-4 w-4" />
+              Refresh Session
             </Button>
           </div>
         </div>

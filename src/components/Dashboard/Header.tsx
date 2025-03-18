@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Bell, MoonStar, Search, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/context/ThemeContext";
 
 interface HeaderProps {
   title: string;
@@ -17,13 +17,7 @@ interface HeaderProps {
 
 const Header = ({ title }: HeaderProps) => {
   const { user } = useAuth();
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.classList.toggle("dark");
-  };
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b px-6 py-3">
