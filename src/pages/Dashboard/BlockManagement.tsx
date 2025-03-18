@@ -74,14 +74,28 @@ const BlockManagement = () => {
       light.id === id ? { ...light, ...data } : light
     );
     
-    setBlock({ ...block, lights: updatedLights });
+    // Determine if the block should be considered "on" based on if any lights are on
+    const anyLightsOn = updatedLights.some(light => light.isOn);
+    
+    setBlock({ 
+      ...block, 
+      lights: updatedLights,
+      isOn: anyLightsOn
+    });
   };
   
   const handleDeleteLight = (id: string) => {
+    const updatedLights = block.lights.filter(light => light.id !== id);
+    
+    // Determine if the block should be considered "on" based on if any lights are on
+    const anyLightsOn = updatedLights.some(light => light.isOn);
+    
     setBlock({
       ...block,
-      lights: block.lights.filter(light => light.id !== id),
+      lights: updatedLights,
+      isOn: anyLightsOn
     });
+    
     toast.success("Light deleted successfully");
   };
   
@@ -108,9 +122,12 @@ const BlockManagement = () => {
         },
       };
       
+      const updatedLights = [...block.lights, newLightObj];
+      
       setBlock({
         ...block,
-        lights: [...block.lights, newLightObj],
+        lights: updatedLights,
+        // No need to update block.isOn since we're adding a light that's off
       });
       
       setNewLight({ name: "", zone: "" });

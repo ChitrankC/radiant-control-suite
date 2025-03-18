@@ -38,8 +38,21 @@ const BlockCard = ({ block, onUpdate, onDelete, onViewDetails }: BlockCardProps)
     setIsLoading(true);
     
     setTimeout(() => {
+      // Determine new power state
       const newStatus = !block.isOn;
-      onUpdate(block.id, { isOn: newStatus });
+      
+      // Update all lights to match the new block power state
+      const updatedLights = block.lights.map(light => ({
+        ...light,
+        isOn: newStatus
+      }));
+      
+      // Update the block with new status and lights
+      onUpdate(block.id, { 
+        isOn: newStatus,
+        lights: updatedLights
+      });
+      
       toast.success(`Block ${block.name} ${newStatus ? "powered on" : "powered off"}`);
       setIsLoading(false);
     }, 1000);
