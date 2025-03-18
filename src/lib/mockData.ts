@@ -1,4 +1,3 @@
-
 export interface Schedule {
   enabled: boolean;
   startTime: string;
@@ -236,7 +235,7 @@ export const mockBlocks: Block[] = [
   // Add more blocks if needed
 ];
 
-// Populate each block with 30 lights if they don't have enough
+// Update the populate function to respect block power state
 for (const block of mockBlocks) {
   const lightsToAdd = 30 - block.lights.length;
   if (lightsToAdd > 0) {
@@ -246,7 +245,7 @@ for (const block of mockBlocks) {
         id: `light-${block.id}-${i}`,
         name: `Light ${i}`,
         zone: `Zone ${zoneNumber}`,
-        isOn: block.isOn,
+        isOn: false, // Default to off for new lights
         usageData: {
           hoursOn: Math.floor(Math.random() * 300),
           energyUsed: Math.floor(Math.random() * 150),
@@ -255,6 +254,12 @@ for (const block of mockBlocks) {
       });
     }
   }
+  
+  // Ensure all lights match block power state
+  block.lights = block.lights.map(light => ({
+    ...light,
+    isOn: block.isOn && light.isOn
+  }));
 }
 
 export const mockUsers: User[] = [

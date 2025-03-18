@@ -49,7 +49,16 @@ const BlockManagement = () => {
     setTimeout(() => {
       const foundBlock = mockBlocks.find(b => b.id === blockId);
       if (foundBlock) {
-        setBlock(foundBlock);
+        // Ensure all lights match the block's power state when loading
+        const syncedLights = foundBlock.lights.map(light => ({
+          ...light,
+          isOn: foundBlock.isOn && light.isOn // Only keep lights on if block is powered on
+        }));
+        
+        setBlock({
+          ...foundBlock,
+          lights: syncedLights
+        });
       } else {
         toast.error("Block not found");
         navigate("/dashboard");
@@ -144,7 +153,6 @@ const BlockManagement = () => {
   const toggleAllLights = () => {
     setIsTogglingAll(true);
     
-    // Determine the new state (opposite of current block state)
     const newState = !block.isOn;
     
     setTimeout(() => {
